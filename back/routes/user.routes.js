@@ -1,22 +1,27 @@
-const express = require('express');
-const router = express.Router();
-const userCtrl = require('../controllers/auth.user.controllers');
-const userController = require('../controllers/user.controllers');
+const router = require("express").Router();
+const authController = require("../controllers/auth.controller");
+const userController = require("../controllers/user.controller");
+const userAuth = require("../middleware/auth.middleware");
+const uploadAuth = require("../middleware/auth.middleware");
+const uploadController = require("../controllers/upload.controller");
+const multer = require("multer");
+const upload = multer();
 
-//Authentification
-router.post('/signup', userCtrl.signup);
-router.post('/login', userCtrl.login);
-router.post('/logout', userCtrl.logout);
+//auth
+router.post("/register", authController.signUp);
+router.post("/login", authController.signIn);
+router.get("/logout", authController.logout);
 
-//Utilisateurs
-router.get('/', userController.getAllUsers);
-router.get('/:id', userController.getOneUser);
-router.put('/:id', userController.updateUser);
+//users
+router.get("/", userController.getAllUsers);
+router.get("/:id", userController.userInfo);
+router.put("/:id", userAuth.isUserAuth, userController.updateUser);
+//router.delete('/:id', userController.deleteUser)
 
-//Téléchargement de photo
+//upload
 router.post(
-  '/upload',
-  upload.single('file'),
+  "/upload",
+  upload.single("file"),
   uploadAuth.isUploadAuth,
   uploadController.uploadProfil
 );
