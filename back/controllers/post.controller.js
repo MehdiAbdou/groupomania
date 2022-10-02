@@ -4,13 +4,12 @@ const fs = require("fs");
 const { uploadErrors } = require("../utils/errors.utils");
 const ObjectID = require("mongoose").Types.ObjectId;
 
-//CRUD : Create
 module.exports.createPost = async (req, res) => {
   let fileName;
 
   if (req.file) {
     try {
-      //verification du format du fichier (s'assurer que c'est une image, et que son format est supporté)
+      //verification format 
       if (
         req.file.mimetype !== "image/jpg" &&
         req.file.mimetype !== "image/png" &&
@@ -22,9 +21,9 @@ module.exports.createPost = async (req, res) => {
       if (req.file.size > 500000) throw Error("Fichier trop volumineux");
     } catch (err) {
       const errors = uploadErrors(err);
-      return res.status(201).json({ errors });
+      return res.status(201).json({ errors });c
     }
-    //nouveau nom du fichier
+    //Rename fichier
     fileName = req.body.posterId + Date.now() + ".jpg";
 
     //stockage de la nouvelle image.
@@ -54,7 +53,6 @@ module.exports.createPost = async (req, res) => {
   }
 };
 
-//CRUD : Read
 module.exports.readPost = (req, res) => {
   PostModel.find((err, docs) => {
     if (!err) res.send(docs);
@@ -62,11 +60,10 @@ module.exports.readPost = (req, res) => {
   }).sort({ createdAt: -1 });
 };
 
-//CRUD : Update
 module.exports.updatePost = (req, res) => {
   if (!ObjectID.isValid(req.params.id))
-    //Je commence dans une certain nombre de cas par vérifier l'existence de l'objet, avant de commencer quelque démarche que ce soit. Si l'objet demandé n'est pas trouvé,
-    return res.status(400).send("ID inconnu : " + req.params.id); //une erreur m'en informe
+    
+    return res.status(400).send("ID inconnu : " + req.params.id); 
 
   const updatedRecord = {
     message: req.body.message,

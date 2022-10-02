@@ -6,16 +6,16 @@ const { signInErrors } = require("../utils/errors.utils");
 const maxAge = 1000 * 60 * 60 * 24;
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.TOKEN_SECRET, {
-    expiresIn: 1000 * 60 * 60 * 24, //temps en millisecondes: 1000ms(=1seconde) * 60s(=1minute) * 60min(=1heure) * 24heures. Le token sera donc valable durant 24h
+    //token valable 24h
+    expiresIn: 1000 * 60 * 60 * 24, 
   });
 };
 
 module.exports.signUp = async (req, res) => {
-  const { pseudo, email, password } = req.body; //"déstructuré" càd pseudo= req.body.pseudo ; email = req.body.email ; etc...
+  const { pseudo, email, password } = req.body; 
 
   try {
-    const user = await UserModel.create({ pseudo, email, password }); //Lorsqu'on veut créer un utilisateur, ces trois éléments obligatoires doivent être présents, sinon ça passe au catch en dessous.
-    res.status(201).json({ user: user._id });
+    const user = await UserModel.create({ pseudo, email, password }); 
   } catch (err) {
     const errors = signUpErrors(err);
     res.status(200).send({ errors });
